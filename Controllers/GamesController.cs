@@ -26,9 +26,9 @@ namespace aspnet3back.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Games> GetbyId(int id)
+        public async Task<ActionResult<Games>> GetbyId(int id)
         {
-            if (_context.Games.Find(id) == null)
+            if (await _context.Games.FindAsync(id) == null)
             {
                 return NotFound();
             }
@@ -36,28 +36,31 @@ namespace aspnet3back.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Games game)
+        public async Task<IActionResult> Create(Games game)
         {
-            _context.Games.Add(game);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(Create), new {id = game.Id }, game);
+            await _context.Games.AddAsync(game);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Create), new { id = game.Id }, game);
         }
         [HttpPut("{id}")]
-        public IActionResult Edit(int id, Games game)
+        public async Task<IActionResult> Edit(int id, Games game)
         {
-            var game1 = _context.Games.Find(id);
+
+            var game1 = await _context.Games.FindAsync(id);
             game1.Name = game.Name;
             game1.Platform = game.Platform;
-            _context.SaveChanges();
+
+
+            await _context.SaveChangesAsync();
             return Ok();
         }
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var game1 = _context.Games.Find(id);
-            
-           _context.Games.Remove(game1);
-            _context.SaveChanges();
+            var game1 = await _context.Games.FindAsync(id);
+
+            _context.Games.Remove(game1);
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
